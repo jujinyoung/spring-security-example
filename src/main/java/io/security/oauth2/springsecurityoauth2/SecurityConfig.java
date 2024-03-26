@@ -11,10 +11,12 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
+        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
-                .with(new CustomSecurityConfigurer(), (conf) -> conf.setFlag(false));
+                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling((exception) -> exception.authenticationEntryPoint((request, response, authException) -> {
+                    System.out.println("custom entryPoint");
+                }));
 
         return http.build();
     }
